@@ -2,7 +2,7 @@ import { useEffect,useRef,useState } from 'react';
 import './App.css';
 
 function App() {
-  const [time,setTime]= useState(0);
+  const [time,setTime]= useState({hr:0,min:0,sec:0});
 
   // setInterval(()=>{
   //   setTime(prev=>prev+1);
@@ -16,14 +16,24 @@ function App() {
   let id= useRef();
   function handleTime(){
     id.current=setInterval(()=>{
-      setTime((prev)=>prev+1);
+      setTime((prev)=>{
+        if(prev.min==60){
+          return {...prev,min:0,sec:0,hr:prev.hr+1}
+        }
+        if(prev.sec==60){
+          return {...prev,min:prev.min+1,sec:0}
+        }
+        return {...prev,sec:prev.sec+1};
+        
 
-    },1000)
+      });
+      // console.log(time);
+    },100)
      
   }
   return (
     <>
-    <h1>{time}</h1>
+    <h1>{time.hr<10? `0`+time.hr:time.hr} {time.min<10? `0`+time.min:time.min}:{time.sec <10? `0`+time.sec : time.sec}</h1>
       <button
       onClick={()=>handleTime()
       }
@@ -34,7 +44,7 @@ function App() {
       <button
       onClick={()=>{
         clearInterval(id.current)
-        setTime(0);
+        setTime({hr:0,min:0,sec:0});
 
       }}
       >Reset</button> 
